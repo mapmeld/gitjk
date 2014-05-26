@@ -7,21 +7,21 @@ program will either undo it, tell you how to undo it, or tell you it's impossibl
 
 Asking for undo-ing advice.
 
-```git init
-gitjk
+    git init
+    gitjk
 
-This created a .git folder in the current directory. You can remove it.
-sudo rm -r .git```
+    This created a .git folder in the current directory. You can remove it.
+    sudo rm -r .git
 
-Asking to just fix it
+Asking to fix it automatically
 
-```git add file.js
-gitjk --fix
+    git add file.js
+    gitjk --fix
 
-This added file.js to the changes staged for commit. All changes to file.js will be removed from
-staging for this commit, but remain saved in your file.
-Running... git rm -r --cached file.js
-Completed```
+    This added file.js to the changes staged for commit. All changes to file.js will be removed from
+    staging for this commit, but remain saved in your file.
+    Running... git rm -r --cached file.js
+    Completed
 
 ## Install
 
