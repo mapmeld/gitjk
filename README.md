@@ -23,12 +23,40 @@ Asking to fix it automatically
     Running... git rm -r --cached file.js
     Completed
 
+## Coverage
+Included:
+    git add
+    git checkout
+    git clone
+    git diff
+    git init
+    git log
+    git remote
+    git rm
+    git show
+    git status
+
+Not included:
+    git bisect
+    git branch
+    git commit
+    git fetch
+    git grep
+    git merge
+    git mv
+    git pull
+    git push
+    git rebase
+    git reset
+    git tag
+
 ## Install
 
-You can't just npm install! The module is named gitjk_cmd so you can set up a gitjk alias.
+You can't just npm install! The module is named gitjk but you can set up an alias for it to pipe the
+last command into the program.
 
-```npm install -g gitjk```
-```alias gitjk="fc -ln -1 | gitjk_cmd"```
+    npm install -g gitjk
+    alias gitjk="fc -ln -1 | gitjk_cmd"
 
 ## License
 

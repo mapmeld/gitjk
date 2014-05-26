@@ -1,4 +1,4 @@
-#!/usr/bin/env node
+#! /usr/bin/env node
 
 // requirements
 var program = require('commander');
@@ -6,7 +6,7 @@ var exec = require('child_process').exec;
 
 // command line options
 program
-  .version('0.0.1')
+  .version('0.0.3')
   .option('-f', '--fix', 'attempt to fix')
   .parse(process.argv);
 
@@ -45,7 +45,7 @@ process.stdin.on('data', function(initial_command) {
 var getFileNames = function(cmd){
   var parts = cmd.split(" ");
   for(var p = 0; p < parts.length; p++){
-    if(parts[p].indexOf("-") == 0){
+    if(parts[p].indexOf("-") === 0){
       parts[p] = "";
     }
   }
@@ -63,6 +63,32 @@ var undoCommand = function(cmd, callback){
       undo = 'sudo rm -r .git';
       autorun = true;
     }
+    
+    else if(cmd.indexOf('git clone') > -1){
+      var outputfolder = null;
+      var cloned_into = cmd.split('git clone ')[1].replace('  ', ' ').replace("\n", '').split(' ');
+      if(cloned_into.length > 1){
+        // specified output folder
+        outputfolder = cloned_into[1];
+      }
+      else{
+        // default output folder
+        // extract from remote - for example https://github.com/mapmeld/gitjk.git
+        outputfolder = cloned_into[0].split("/");
+        outputfolder = outputfolder[outputfolder.length-1].split('.git')[0];
+      }
+      
+      info = 'This downloaded a repo and all of its git history to a folder. You can remove it.';
+      if(outputfolder){
+        undo = 'sudo rm -r ' + outputfolder;
+        autorun = true;
+      }
+      else{
+        info += "\nCouldn't figure out what folder this was downloaded to.";
+        autorun = false;
+      }
+    }
+    
     else if(cmd.indexOf('git add') > -1){
       filenames = getFileNames(cmd.replace("\n", "").split('git add ')[1]);
       exec('git status ' + filenames, function(err, response){
@@ -90,7 +116,7 @@ var undoCommand = function(cmd, callback){
         if(existing_filenames.length){
           undo = 'git reset ' + existing_filenames;
           if(new_filenames.length){
-            undo += "\n"
+            undo += "\n";
           }
         }
         if(new_filenames.length){
@@ -103,6 +129,7 @@ var undoCommand = function(cmd, callback){
       // delay until knowing how to remove files
       return;
     }
+    
     else if(cmd.indexOf('git rm') > -1){
       if(cmd.indexOf("--cached") > -1){
         info = 'This took files out of the changes staged for commit. All changes will be re-added to staging for this commit.';
@@ -116,13 +143,67 @@ var undoCommand = function(cmd, callback){
       autorun = true;
     }
     
+    else if(cmd.indexOf('git checkout') > -1){
+      info = 'git checkout moved you into a different branch of the repo. You can checkout any branch by name, or checkout the last one using -';
+      undo = 'git checkout -';
+      autorun = true;
+    }
+    
+    else if(cmd.indexOf('git remote add') > -1){
+      var repo_name = cmd.split('git remote add ')[1].split(' ')[0];
+      var repo_url = cmd.split('git remote add ')[1].split(' ')[1];
+
+      info = 'This added a remote repo (named ' + repo_name + ') pointing to ' + repo_url;
+      info += "\nIt can be removed.";
+      undo = 'git remote rm ' + repo_name;
+      autorun = true;
+    }
+    
+    else if(cmd.indexOf('git remote remove') > -1){
+      var repo_name = cmd.split('git remote add ')[1].split(' ')[0];
+
+      info = 'This removed a remote repo (named ' + repo_name + ')';
+      info += "\nIt needs to be added back using git remote add <name> <git-url>";
+      autorun = false;
+    }
+    
+    else if(cmd.indexOf('git remote set-url') > -1){
+      var repo_name = cmd.split('git remote set-url ')[1].split(' ')[0];
+      var repo_url = cmd.split('git remote set-url ')[1].split(' ')[1];
+
+      info = 'This changed the remote repo (named ' + repo_name + ') to point to ' + repo_url;
+      info += "\nIt can be removed (using git remote rm) or set again (using git remote set-url).";
+      autorun = false;
+    }
+    
+    else if(cmd.indexOf('git remote rename') > -1){
+      var old_name = cmd.split('git remote rename ')[1].split(' ')[0];
+      var new_name = cmd.split('git remote rename')[1].split(' ')[1];
+      info = 'This changed the remote repo (named ' + old_name + ') to have the name ' + new_name + '. It can be reset.';
+      undo = 'git remote rename ' + new_name + ' ' + old_name;
+      autorun = true;
+    }
+    
     // harmless
+    
+    else if(cmd.indexOf('git diff') > -1){
+      info = "git diff doesn't change the repo; it just tells you the changes waiting for commit OR the changes between branches. Use it often!";
+      autorun = true;
+    }
+    else if(cmd.indexOf('git show') > -1){
+      info = "git show doesn't change the repo; it just tells you the changes waiting for commit OR the changes between branches.";
+      autorun = true;
+    }
+    else if(cmd.indexOf('git log') > -1){
+      info = "git log doesn't change the repo; it just lists the last several commits in this branch. Use it often!";
+      autorun = true;
+    }
     else if(cmd.indexOf('git status') > -1){
       info = "git status doesn't change the repo; it just tells you what changes there are. Use it often!";
       autorun = true;
     }
     else if(cmd.indexOf('git remote') > -1){
-      info = "git remote doesn't change the repo; it just tells you what remotes there are. Use it often!";
+      info = "git remote (without additional arguments) doesn't change the repo; it just tells you what remotes there are. Use it often!";
       autorun = true;
     }
     
