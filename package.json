@@ -1,6 +1,6 @@
 {
   "name": "gitjk",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "description": "undo or explain how to undo last git command",
   "keywords": ["git", "undo", "oops"],
   "author": "mapmeld",
@@ -18,7 +18,8 @@
   },
   "preferGlobal": "true",
   "bin": {
-    "gitjk_cmd": "index.js"
+    "gitjk_cmd": "index.js",
+    "git-jk": "index.js"
   },
   "scripts": {
     "test": "mocha"

@@ -7,7 +7,7 @@ describe('git init', function(){
       if(err){
         throw err;
       }
-      assert.include(response, 'sudo rm -r .git');
+      assert.include(response, 'rm -rf .git');
       done();
     });
   });
@@ -19,7 +19,7 @@ describe('git clone', function(){
       if(err){
         throw err;
       }
-      assert.include(response, 'sudo rm -r gitjk');
+      assert.include(response, 'rm -rf ./gitjk');
       done();
     });
   });
@@ -29,7 +29,7 @@ describe('git clone', function(){
       if(err){
         throw err;
       }
-      assert.include(response, 'sudo rm -r test_gitjk');
+      assert.include(response, 'rm -rf ./test_gitjk');
       done();
     });
   });

@@ -6,7 +6,7 @@ var exec = require('child_process').exec;
 
 // command line options
 program
-  .version('0.0.9')
+  .version('0.0.10')
   .option('-f', '--fix', 'attempt to fix')
   .parse(process.argv);
 
@@ -80,7 +80,7 @@ var undoCommand = function(cmd, callback){
     
     if(cmd.indexOf('git init') > -1){
       info = 'This created a .git folder in the current directory. You can remove it.';
-      undo = 'sudo rm -r .git';
+      undo = 'rm -rf .git';
       autorun = true;
     }
     
@@ -95,12 +95,13 @@ var undoCommand = function(cmd, callback){
         // default output folder
         // extract from remote - for example https://github.com/mapmeld/gitjk.git
         outputfolder = cloned_into[0].split("/");
-        outputfolder = outputfolder[outputfolder.length-1].split('.git')[0];
+        outputfolder = outputfolder[outputfolder.length-1];
+        outputfolder = outputfolder.split('.git')[0];
       }
       
       info = 'This downloaded a repo and all of its git history to a folder. You can remove it.';
-      if(outputfolder){
-        undo = 'sudo rm -r ' + outputfolder;
+      if(outputfolder && outputfolder.length && outputfolder.indexOf("..") == -1){
+        undo = 'rm -rf ./' + outputfolder.replace(' ', '\\ ');
         autorun = true;
       }
       else{
