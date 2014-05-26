@@ -36,7 +36,6 @@ describe('git clone', function(){
 });
 
 describe('git add', function(){
-  /* calls git status - difficult to test this without a repo
   it('should reset a previously-indexed file', function(done){
     exec('echo "git add package.json\n" | ./index.js', function(err, response){
       if(err){
@@ -46,17 +45,16 @@ describe('git add', function(){
       done();
     });
   });
-
-  it('should rm --cached a previously un-indexed file', function(done){
-    exec('echo "git add secret.txt\n" | ./index.js', function(err, response){
+  
+  it('should warn instead of doing git reset . or git reset *', function(done){
+    exec('echo "git add .\n" | ./index.js', function(err, response){
       if(err){
         throw err;
       }
-      assert.include(response, 'git rm -r --cached secret.txt');
+      assert.include(response, 'Using . or * affects all files');
       done();
     });
   });
-  */
 });
 
 describe('git rm', function(){

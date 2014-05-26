@@ -6,7 +6,7 @@ var exec = require('child_process').exec;
 
 // command line options
 program
-  .version('0.0.8')
+  .version('0.0.9')
   .option('-f', '--fix', 'attempt to fix')
   .parse(process.argv);
 
@@ -68,7 +68,7 @@ var getFileNames = function(cmd){
       parts[p] = "";
     }
   }
-  return parts.join(" ");
+  return parts;
 };
 
 var undoCommand = function(cmd, callback){
@@ -110,44 +110,16 @@ var undoCommand = function(cmd, callback){
     }
     
     else if(cmd.indexOf('git add') > -1){
-      filenames = getFileNames(cmd.split('git add ')[1]);
-      exec('git status ' + filenames, function(err, response){
-        var lines = response.split("\n");
-        var new_filenames = [];
-        var existing_filenames = [];
-
-        filenames = filenames.split(' ');
-        for(var i=0; i < lines.length; i++){
-          for(var f=0; f < filenames.length; f++){
-            if(filenames[f] && lines[i].indexOf(filenames[f]) != -1){
-              if(lines[i].indexOf("new file:") != -1){
-                new_filenames.push(filenames[f]);
-              }
-              else{
-                existing_filenames.push(filenames[f]);
-              }
-              filenames[f] = '';
-            }
-          }
-        }
-      
-        info = 'This added files to the changes staged for commit. All changes to files will be removed from staging for this commit, but remain saved in the local file system.';
-        undo = '';
-        if(existing_filenames.length){
-          undo += 'git reset ' + existing_filenames;
-          if(new_filenames.length){
-            undo += "\n";
-          }
-        }
-        if(new_filenames.length){
-          undo += 'git rm -r --cached ' + new_filenames;
-        }
+      var filenames = getFileNames(cmd.split('git add ')[1]);
+      info = 'This added files to the changes staged for commit. All changes to files will be removed from staging for this commit, but remain saved in the local file system.';
+      if(filenames.indexOf('.') > -1 || filenames.indexOf('*') > -1){
+        info += "\nUsing . or * affects all files, so you will need to run 'git reset <file>' on each file you didn't want to add.";
+        autorun = false;
+      }
+      else{
+        undo = 'git reset ' + filenames.join(' ');
         autorun = true;
-        callback(null, info, undo, autorun);
-      });
-      
-      // delay until knowing how to remove files
-      return;
+      }
     }
     
     else if(cmd.indexOf('git rm') > -1){
