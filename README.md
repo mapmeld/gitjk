@@ -16,7 +16,7 @@ Asking for undo-ing advice.
 Asking to fix it automatically
 
     git add file.js
-    gitjk --fix
+    gitjk -f
 
     This added file.js to the changes staged for commit. All changes to file.js will be removed from
     staging for this commit, but remain saved in your file.
