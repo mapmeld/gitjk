@@ -1,0 +1,26 @@
+{
+  "name": "gitjk_cmd",
+  "version": "0.0.1",
+  "description": "undo or explain how to undo last git command",
+  "keywords": ["git", "undo", "oops"],
+  "author": "mapmeld",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mapmeld/gitjk.git"
+  },
+  "dependencies": {
+    "commander": "2.2.x"
+  },
+  "devDependencies": {
+    "should": ">= 0.0.1",
+    "mocha": "1.18.x"
+  },
+  "scripts": {
+    "test": "mocha"
+  },
+  "main": "index",
+  "engines": {
+    "node": ">= 0.6.x"
+  },
+  "files": ["index.js"]
+}
