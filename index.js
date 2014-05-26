@@ -6,7 +6,7 @@ var exec = require('child_process').exec;
 
 // command line options
 program
-  .version('0.0.3')
+  .version('0.0.4')
   .option('-f', '--fix', 'attempt to fix')
   .parse(process.argv);
 
@@ -131,12 +131,12 @@ var undoCommand = function(cmd, callback){
     }
     
     else if(cmd.indexOf('git rm') > -1){
+      filenames = cmd.replace("\n", "").split('git rm ')[1];
       if(cmd.indexOf("--cached") > -1){
         info = 'This took files out of the changes staged for commit. All changes will be re-added to staging for this commit.';
-        undo = 'git add ' + filename;
+        undo = 'git add ' + filenames.replace('--cached', '');
       }
       else{
-        filenames = cmd.replace("\n", "").split('git rm ')[1];
         info = "Don't panic, but this deleted files from the file system. They're not in the recycle bin; they're gone. These files can be restored from your last commit, but uncommited changes were lost.";
         undo = 'git checkout HEAD ' + filenames;
       }
@@ -163,7 +163,7 @@ var undoCommand = function(cmd, callback){
       var repo_name = cmd.split('git remote ')[1].split(' ')[1];
 
       info = 'This removed a remote repo (named ' + repo_name + ')';
-      info += "\nIt needs to be added back using git remote add <name> <git-url>";
+      info += "\nIt needs to be added back using git remote add " + repo_name + " <git-url>";
       autorun = false;
     }
     
@@ -177,8 +177,8 @@ var undoCommand = function(cmd, callback){
     }
     
     else if(cmd.indexOf('git remote rename') > -1){
-      var old_name = cmd.split('git remote rename ')[1].split(' ')[0];
-      var new_name = cmd.split('git remote rename')[1].split(' ')[1];
+      var old_name = cmd.split('git remote rename ')[1].split(' ')[0].replace('\n', '');
+      var new_name = cmd.split('git remote rename ')[1].split(' ')[1].replace('\n', '');
       info = 'This changed the remote repo (named ' + old_name + ') to have the name ' + new_name + '. It can be reset.';
       undo = 'git remote rename ' + new_name + ' ' + old_name;
       autorun = true;

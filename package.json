@@ -1,6 +1,6 @@
 {
   "name": "gitjk",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "undo or explain how to undo last git command",
   "keywords": ["git", "undo", "oops"],
   "author": "mapmeld",
@@ -13,7 +13,8 @@
   },
   "devDependencies": {
     "should": ">= 0.0.1",
-    "mocha": "1.18.x"
+    "mocha": "1.18.x",
+    "chai": "1.9.x"
   },
   "preferGlobal": "true",
   "bin": {

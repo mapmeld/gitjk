@@ -1,6 +1,6 @@
-# gitjk_cmd
+# gitjk
 
-Based on a joke I posted a while ago - if you just ran a command in git that you don't like, this
+Based on a joke I posted a while ago - if you just ran a git command that you didn't mean to, this
 program will either undo it, tell you how to undo it, or tell you it's impossible to undo.
 
 ## Examples
