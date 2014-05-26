@@ -25,30 +25,32 @@ Asking to fix it automatically
 
 ## Coverage
 Included:
-    git add
-    git checkout
-    git clone
-    git diff
-    git init
-    git log
-    git remote
-    git rm
-    git show
-    git status
+
+    add
+    checkout
+    clone
+    commit
+    diff
+    fetch
+    grep
+    init
+    log
+    push
+    remote
+    rm
+    show
+    status
 
 Not included:
-    git bisect
-    git branch
-    git commit
-    git fetch
-    git grep
-    git merge
-    git mv
-    git pull
-    git push
-    git rebase
-    git reset
-    git tag
+
+    bisect
+    branch
+    merge
+    mv
+    pull
+    rebase
+    reset
+    tag
 
 ## Install
 

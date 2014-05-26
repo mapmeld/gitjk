@@ -184,10 +184,30 @@ var undoCommand = function(cmd, callback){
       autorun = true;
     }
     
+    else if(cmd.indexOf('git commit') > -1){
+      info = 'This saved your staged changes as a commit, which can be updated with git commit --amend or completely uncommited:';
+      undo = "git reset --soft 'HEAD^'";
+    }
+    
+    else if(cmd.indexOf('git fetch') > -1){
+      info = 'This updated the local copy of all branches in this repo. Un-updating master (and you can do other branches, too).';
+      undo = 'git update-ref refs/remotes/origin/master refs/remotes/origin/master@{1}';
+      autorun = true;
+    }
+    
+    else if(cmd.indexOf('git push') > -1){
+      info = 'This uploaded all of your committed changes to a remote repo. It may be impractical to reverse it.';
+      autorun = false;
+    }
+    
     // harmless
     
     else if(cmd.indexOf('git diff') > -1){
       info = "git diff doesn't change the repo; it just tells you the changes waiting for commit OR the changes between branches. Use it often!";
+      autorun = true;
+    }
+    else if(cmd.indexOf('git grep') > -1){
+      info = "git grep doesn't change the repo; it's a search tool. Use grep and git grep often!";
       autorun = true;
     }
     else if(cmd.indexOf('git show') > -1){

@@ -155,6 +155,42 @@ describe('git remote', function(){
   });
 });
 
+describe('git commit', function(){
+  it('should unseal a commit', function(done){
+    exec('echo "git commit" | ./index.js', function(err, response){
+      if(err){
+        throw err;
+      }
+      assert.include(response, "git reset --soft 'HEAD^'");
+      done();
+    });
+  });
+});
+
+describe('git fetch', function(){
+  it('should un-update master branch', function(done){
+    exec('echo "git fetch" | ./index.js', function(err, response){
+      if(err){
+        throw err;
+      }
+      assert.include(response, "git update-ref refs/remotes/origin/master refs/remotes/origin/master@{1}");
+      done();
+    });
+  });
+});
+
+describe('git push', function(){
+  it('should not fix a git push', function(done){
+    exec('echo "git push origin master" | ./index.js', function(err, response){
+      if(err){
+        throw err;
+      }
+      assert.include(response, "This uploaded all of your committed changes to a remote repo.");
+      done();
+    });
+  });
+});
+
 describe('reassure user on do-nothing commands', function(){
   it('git status', function(done){
     exec('echo "git status" | ./index.js', function(err, response){
@@ -188,6 +224,16 @@ describe('reassure user on do-nothing commands', function(){
   
   it('git log', function(done){
     exec('echo "git log" | ./index.js', function(err, response){
+      if(err){
+        throw err;
+      }
+      assert.include(response, "doesn't change the repo");
+      done();
+    });
+  });
+  
+  it('git grep', function(done){
+    exec('echo "git grep" | ./index.js', function(err, response){
       if(err){
         throw err;
       }
