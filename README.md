@@ -57,8 +57,15 @@ Not included:
 You can't just npm install! The module is named gitjk but you can set up an alias for it to pipe the
 last command into the program.
 
+### OSX or BSD
+
     npm install -g gitjk
     alias gitjk="history 10 | tail -r | gitjk_cmd"
+
+### Ubuntu / other Linux
+
+    npm install -g gitjk
+    alias gitjk="history 10 | tac | gitjk_cmd"
 
 ## License
 
