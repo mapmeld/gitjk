@@ -3,7 +3,7 @@ var assert = require('chai').assert;
 
 describe('git init', function(){
   it('should remove the .git directory', function(done){
-    exec('echo "git init" | ./index.js', function(err, response){
+    exec('echo "git init\n" | ./index.js', function(err, response){
       if(err){
         throw err;
       }
@@ -15,7 +15,7 @@ describe('git init', function(){
 
 describe('git clone', function(){
   it('should remove the default download directory', function(done){
-    exec('echo "git clone git@github.com:mapmeld/gitjk.git" | ./index.js', function(err, response){
+    exec('echo "git clone git@github.com:mapmeld/gitjk.git\n" | ./index.js', function(err, response){
       if(err){
         throw err;
       }
@@ -25,7 +25,7 @@ describe('git clone', function(){
   });
 
   it('should remove a custom download directory', function(done){
-    exec('echo "git clone git@github.com:mapmeld/gitjk.git test_gitjk" | ./index.js', function(err, response){
+    exec('echo "git clone git@github.com:mapmeld/gitjk.git test_gitjk\n" | ./index.js', function(err, response){
       if(err){
         throw err;
       }
@@ -38,7 +38,7 @@ describe('git clone', function(){
 describe('git add', function(){
   /* calls git status - difficult to test this without a repo
   it('should reset a previously-indexed file', function(done){
-    exec('echo "git add package.json" | ./index.js', function(err, response){
+    exec('echo "git add package.json\n" | ./index.js', function(err, response){
       if(err){
         throw err;
       }
@@ -48,7 +48,7 @@ describe('git add', function(){
   });
 
   it('should rm --cached a previously un-indexed file', function(done){
-    exec('echo "git add secret.txt" | ./index.js', function(err, response){
+    exec('echo "git add secret.txt\n" | ./index.js', function(err, response){
       if(err){
         throw err;
       }
@@ -61,7 +61,7 @@ describe('git add', function(){
 
 describe('git rm', function(){
   it('should re-index a cached/removed file', function(done){
-    exec('echo "git rm package.json --cached" | ./index.js', function(err, response){
+    exec('echo "git rm package.json --cached\n" | ./index.js', function(err, response){
       if(err){
         throw err;
       }
@@ -71,7 +71,7 @@ describe('git rm', function(){
   });
   
   it('should un-delete a deleted file', function(done){
-    exec('echo "git rm package.json" | ./index.js', function(err, response){
+    exec('echo "git rm package.json\n" | ./index.js', function(err, response){
       if(err){
         throw err;
       }
@@ -83,7 +83,7 @@ describe('git rm', function(){
 
 describe('git mv', function(){
   it('should move the file back', function(done){
-    exec('echo "git mv package.json p.json" | ./index.js', function(err, response){
+    exec('echo "git mv package.json p.json\n" | ./index.js', function(err, response){
       if(err){
         throw err;
       }
@@ -95,7 +95,7 @@ describe('git mv', function(){
 
 describe('git checkout', function(){
   it('should checkout back to the previous directory', function(done){
-    exec('echo "git checkout bogus" | ./index.js', function(err, response){
+    exec('echo "git checkout bogus\n" | ./index.js', function(err, response){
       if(err){
         throw err;
       }
@@ -105,7 +105,7 @@ describe('git checkout', function(){
   });
   
   it('should checkout back to the previous directory', function(done){
-    exec('echo "git checkout -b created" | ./index.js', function(err, response){
+    exec('echo "git checkout -b created\n" | ./index.js', function(err, response){
       if(err){
         throw err;
       }
@@ -117,7 +117,7 @@ describe('git checkout', function(){
 
 describe('git remote', function(){
   it('should remove a remote add', function(done){
-    exec('echo "git remote add github https://github.com" | ./index.js', function(err, response){
+    exec('echo "git remote add github https://github.com\n" | ./index.js', function(err, response){
       if(err){
         throw err;
       }
@@ -127,7 +127,7 @@ describe('git remote', function(){
   });
   
   it('should warn a remote remove', function(done){
-    exec('echo "git remote remove github" | ./index.js', function(err, response){
+    exec('echo "git remote remove github\n" | ./index.js', function(err, response){
       if(err){
         throw err;
       }
@@ -137,7 +137,7 @@ describe('git remote', function(){
   });
   
   it('should warn a remote rm', function(done){
-    exec('echo "git remote rm github" | ./index.js', function(err, response){
+    exec('echo "git remote rm github\n" | ./index.js', function(err, response){
       if(err){
         throw err;
       }
@@ -147,7 +147,7 @@ describe('git remote', function(){
   });
   
   it('should swap names in a remote rename', function(done){
-    exec('echo "git remote rename github banana" | ./index.js', function(err, response){
+    exec('echo "git remote rename github banana\n" | ./index.js', function(err, response){
       if(err){
         throw err;
       }
@@ -157,7 +157,7 @@ describe('git remote', function(){
   });
   
   it('does nothing without args', function(done){
-    exec('echo "git remote" | ./index.js', function(err, response){
+    exec('echo "git remote\n" | ./index.js', function(err, response){
       if(err){
         throw err;
       }
@@ -169,7 +169,7 @@ describe('git remote', function(){
 
 describe('git commit', function(){
   it('should unseal a commit', function(done){
-    exec('echo "git commit" | ./index.js', function(err, response){
+    exec('echo "git commit\n" | ./index.js', function(err, response){
       if(err){
         throw err;
       }
@@ -181,7 +181,7 @@ describe('git commit', function(){
 
 describe('git fetch', function(){
   it('should un-update master branch', function(done){
-    exec('echo "git fetch" | ./index.js', function(err, response){
+    exec('echo "git fetch\n" | ./index.js', function(err, response){
       if(err){
         throw err;
       }
@@ -193,7 +193,7 @@ describe('git fetch', function(){
 
 describe('git pull', function(){
   it('should do a reset after git pull', function(done){
-    exec('echo "git pull origin master" | ./index.js', function(err, response){
+    exec('echo "git pull origin master\n" | ./index.js', function(err, response){
       if(err){
         throw err;
       }
@@ -205,7 +205,7 @@ describe('git pull', function(){
 
 describe('git merge', function(){
   it('should do a reset after git merge', function(done){
-    exec('echo "git merge merged" | ./index.js', function(err, response){
+    exec('echo "git merge merged\n" | ./index.js', function(err, response){
       if(err){
         throw err;
       }
@@ -217,7 +217,7 @@ describe('git merge', function(){
 
 describe('git push', function(){
   it('should not fix a git push', function(done){
-    exec('echo "git push origin master" | ./index.js', function(err, response){
+    exec('echo "git push origin master\n" | ./index.js', function(err, response){
       if(err){
         throw err;
       }
@@ -229,7 +229,7 @@ describe('git push', function(){
 
 describe('reassure user on do-nothing commands', function(){
   it('git status', function(done){
-    exec('echo "git status" | ./index.js', function(err, response){
+    exec('echo "git status\n" | ./index.js', function(err, response){
       if(err){
         throw err;
       }
@@ -239,7 +239,7 @@ describe('reassure user on do-nothing commands', function(){
   });
   
   it('git diff', function(done){
-    exec('echo "git diff" | ./index.js', function(err, response){
+    exec('echo "git diff\n" | ./index.js', function(err, response){
       if(err){
         throw err;
       }
@@ -249,7 +249,7 @@ describe('reassure user on do-nothing commands', function(){
   });
   
   it('git show', function(done){
-    exec('echo "git show" | ./index.js', function(err, response){
+    exec('echo "git show\n" | ./index.js', function(err, response){
       if(err){
         throw err;
       }
@@ -259,7 +259,7 @@ describe('reassure user on do-nothing commands', function(){
   });
   
   it('git log', function(done){
-    exec('echo "git log" | ./index.js', function(err, response){
+    exec('echo "git log\n" | ./index.js', function(err, response){
       if(err){
         throw err;
       }
@@ -269,7 +269,7 @@ describe('reassure user on do-nothing commands', function(){
   });
   
   it('git grep', function(done){
-    exec('echo "git grep" | ./index.js', function(err, response){
+    exec('echo "git grep\n" | ./index.js', function(err, response){
       if(err){
         throw err;
       }
@@ -281,7 +281,7 @@ describe('reassure user on do-nothing commands', function(){
 
 describe('unknown command', function(){
   it('should print an error message', function(done){
-    exec('echo "ls" | ./index.js', function(err, response){
+    exec('echo "ls\n" | ./index.js', function(err, response){
       if(err){
         throw err;
       }

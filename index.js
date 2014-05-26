@@ -6,7 +6,7 @@ var exec = require('child_process').exec;
 
 // command line options
 program
-  .version('0.0.5')
+  .version('0.0.6')
   .option('-f', '--fix', 'attempt to fix')
   .parse(process.argv);
 
@@ -54,6 +54,7 @@ var getFileNames = function(cmd){
 
 var undoCommand = function(cmd, callback){
   try{
+    var cmd = cmd.replace(/\r?\n|\r/g, ' ').replace(/\s\s+/g, ' ').replace(/\s$/, '');
     var info = null;
     var undo = null;
     var autorun = false;
@@ -66,7 +67,7 @@ var undoCommand = function(cmd, callback){
     
     else if(cmd.indexOf('git clone') > -1){
       var outputfolder = null;
-      var cloned_into = cmd.split('git clone ')[1].replace('  ', ' ').replace("\n", '').split(' ');
+      var cloned_into = cmd.split('git clone ')[1].split(' ');
       if(cloned_into.length > 1){
         // specified output folder
         outputfolder = cloned_into[1];
@@ -90,7 +91,7 @@ var undoCommand = function(cmd, callback){
     }
     
     else if(cmd.indexOf('git add') > -1){
-      filenames = getFileNames(cmd.replace("\n", "").split('git add ')[1]);
+      filenames = getFileNames(cmd.split('git add ')[1]);
       exec('git status ' + filenames, function(err, response){
         var lines = response.split("\n");
         var new_filenames = [];
@@ -131,7 +132,7 @@ var undoCommand = function(cmd, callback){
     }
     
     else if(cmd.indexOf('git rm') > -1){
-      filenames = cmd.replace("\n", "").split('git rm ')[1];
+      filenames = cmd.split('git rm ')[1];
       if(cmd.indexOf("--cached") > -1){
         info = 'This took files out of the changes staged for commit. All changes will be re-added to staging for this commit.';
         undo = 'git add ' + filenames.replace('--cached', '');
@@ -144,8 +145,8 @@ var undoCommand = function(cmd, callback){
     }
     
     else if(cmd.indexOf('git mv') > -1){
-      var old_name = cmd.split('git mv ')[1].split(' ')[0].replace('\n', '');
-      var new_name = cmd.split('git mv ')[1].split(' ')[1].replace('\n', '');
+      var old_name = cmd.split('git mv ')[1].split(' ')[0];
+      var new_name = cmd.split('git mv ')[1].split(' ')[1];
       info = 'This moved the file (named ' + old_name + ') to ' + new_name + '. It can be moved back.';
       undo = 'git mv ' + new_name + ' ' + old_name;
       autorun = true;
@@ -185,8 +186,8 @@ var undoCommand = function(cmd, callback){
     }
     
     else if(cmd.indexOf('git remote rename') > -1){
-      var old_name = cmd.split('git remote rename ')[1].split(' ')[0].replace('\n', '');
-      var new_name = cmd.split('git remote rename ')[1].split(' ')[1].replace('\n', '');
+      var old_name = cmd.split('git remote rename ')[1].split(' ')[0];
+      var new_name = cmd.split('git remote rename ')[1].split(' ')[1];
       info = 'This changed the remote repo (named ' + old_name + ') to have the name ' + new_name + '. It can be reset.';
       undo = 'git remote rename ' + new_name + ' ' + old_name;
       autorun = true;
