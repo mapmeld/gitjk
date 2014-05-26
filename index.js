@@ -159,8 +159,8 @@ var undoCommand = function(cmd, callback){
       autorun = true;
     }
     
-    else if(cmd.indexOf('git remote remove') > -1){
-      var repo_name = cmd.split('git remote add ')[1].split(' ')[0];
+    else if(cmd.indexOf('git remote remove') > -1 || cmd.indexOf('git remote rm') > -1){
+      var repo_name = cmd.split('git remote ')[1].split(' ')[1];
 
       info = 'This removed a remote repo (named ' + repo_name + ')';
       info += "\nIt needs to be added back using git remote add <name> <git-url>";
