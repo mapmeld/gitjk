@@ -25,7 +25,7 @@ Asking to fix it automatically
 
 ## Install
 
-(node and npm are prerequisites)
+You can't just npm install! The module is named gitjk_cmd so you can set up a gitjk alias.
 
 ```npm install -g gitjk```
 ```alias gitjk="fc -ln -1 | gitjk_cmd"```

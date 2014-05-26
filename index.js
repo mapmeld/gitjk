@@ -104,8 +104,15 @@ var undoCommand = function(cmd, callback){
       return;
     }
     else if(cmd.indexOf('git rm') > -1){
-      info = 'This removed files from the changes staged for commit. All changes will be re-added to staging for this commit.';
-      undo = 'git add ' + filename;
+      if(cmd.indexOf("--cached") > -1){
+        info = 'This took files out of the changes staged for commit. All changes will be re-added to staging for this commit.';
+        undo = 'git add ' + filename;
+      }
+      else{
+        filenames = cmd.replace("\n", "").split('git rm ')[1];
+        info = "Don't panic, but this deleted files from the file system. They're not in the recycle bin; they're gone. These files can be restored from your last commit, but uncommited changes were lost.";
+        undo = 'git checkout HEAD ' + filenames;
+      }
       autorun = true;
     }
     
