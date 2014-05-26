@@ -1,7 +1,7 @@
 # gitjk
 
-Based on a joke I posted a while ago - if you just ran a git command that you didn't mean to, this
-program will either undo it, tell you how to undo it, or tell you it's impossible to undo.
+If you just ran a git command that you didn't mean to, this program will either undo it,
+tell you how to undo it, or tell you it's impossible to undo. Based on a joke I posted a while ago.
 
 ## Examples
 
@@ -58,7 +58,7 @@ You can't just npm install! The module is named gitjk but you can set up an alia
 last command into the program.
 
     npm install -g gitjk
-    alias gitjk="fc -ln -1 | gitjk_cmd"
+    alias gitjk="history 10 | tail -r | gitjk_cmd"
 
 ## License
 

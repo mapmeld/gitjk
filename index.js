@@ -6,40 +6,53 @@ var exec = require('child_process').exec;
 
 // command line options
 program
-  .version('0.0.6')
+  .version('0.0.7')
   .option('-f', '--fix', 'attempt to fix')
   .parse(process.argv);
 
 // get last command
+var foundGitCommand = false;
 process.stdin.resume();
 process.stdin.setEncoding('utf8');
-process.stdin.on('data', function(initial_command) {
-  undoCommand(initial_command, function(err, info, command, autorun){
-    if(info){
-      console.log(info);
+process.stdin.on('data', function(last_lines) {
+  if(last_lines.indexOf('git ') == -1){
+    return;
+  }
+  last_lines = last_lines.split('\n');
+
+  for(var a=0; a < last_lines.length; a++){
+    var initial_command = last_lines[a];
+    if(initial_command.indexOf('git ') == -1){
+      continue;
     }
-    else{
-      console.log("I didn't recognize that command");
-      return;
-    }
-    if(command){
-      if((program.rawArgs.indexOf('-f') > -1 || program.rawArgs.indexOf('--fix') > -1) && autorun){
-        console.log('Running ' + command);
-        exec(command, function(){
-          console.log('Completed');
-        });
+    undoCommand(initial_command, function(err, info, command, autorun){
+      if(info){
+        console.log(info);
       }
       else{
-        console.log(command);
+        console.log("I didn't recognize that command");
+        return;
       }
-    }
-    else if(autorun){
-      console.log("No undo command necessary");
-    }
-    else{
-      console.log("No undo command known");
-    }
-  });
+      if(command){
+        if((program.rawArgs.indexOf('-f') > -1 || program.rawArgs.indexOf('--fix') > -1) && autorun){
+          console.log('Running ' + command);
+          exec(command, function(){
+            console.log('Completed');
+          });
+        }
+        else{
+          console.log(command);
+        }
+      }
+      else if(autorun){
+        console.log("No undo command necessary");
+      }
+      else{
+        console.log("No undo command known");
+      }
+    });
+    break;
+  }
 });
 
 var getFileNames = function(cmd){
