@@ -81,6 +81,18 @@ describe('git rm', function(){
   });
 });
 
+describe('git mv', function(){
+  it('should move the file back', function(done){
+    exec('echo "git mv package.json p.json" | ./index.js', function(err, response){
+      if(err){
+        throw err;
+      }
+      assert.include(response, 'git mv p.json package.json');
+      done();
+    });
+  });
+});
+
 describe('git checkout', function(){
   it('should checkout back to the previous directory', function(done){
     exec('echo "git checkout bogus" | ./index.js', function(err, response){
@@ -174,6 +186,30 @@ describe('git fetch', function(){
         throw err;
       }
       assert.include(response, "git update-ref refs/remotes/origin/master refs/remotes/origin/master@{1}");
+      done();
+    });
+  });
+});
+
+describe('git pull', function(){
+  it('should do a reset after git pull', function(done){
+    exec('echo "git pull origin master" | ./index.js', function(err, response){
+      if(err){
+        throw err;
+      }
+      assert.include(response, "git reset --hard HEAD^");
+      done();
+    });
+  });
+});
+
+describe('git merge', function(){
+  it('should do a reset after git merge', function(done){
+    exec('echo "git merge merged" | ./index.js', function(err, response){
+      if(err){
+        throw err;
+      }
+      assert.include(response, "git reset --hard HEAD^");
       done();
     });
   });

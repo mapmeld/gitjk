@@ -26,30 +26,30 @@ Asking to fix it automatically
 ## Coverage
 Included:
 
-    add
-    checkout
-    clone
-    commit
-    diff
-    fetch
-    grep
-    init
-    log
-    push
-    remote
-    rm
-    show
+    add,
+    checkout,
+    clone,
+    commit,
+    diff,
+    fetch,
+    grep,
+    init,
+    log,
+    merge,
+    mv,
+    pull,
+    push,
+    remote,
+    rm,
+    show,
     status
 
 Not included:
 
-    bisect
-    branch
-    merge
-    mv
-    pull
-    rebase
-    reset
+    bisect,
+    branch,
+    rebase,
+    reset,
     tag
 
 ## Install

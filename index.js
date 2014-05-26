@@ -6,7 +6,7 @@ var exec = require('child_process').exec;
 
 // command line options
 program
-  .version('0.0.4')
+  .version('0.0.5')
   .option('-f', '--fix', 'attempt to fix')
   .parse(process.argv);
 
@@ -143,6 +143,14 @@ var undoCommand = function(cmd, callback){
       autorun = true;
     }
     
+    else if(cmd.indexOf('git mv') > -1){
+      var old_name = cmd.split('git mv ')[1].split(' ')[0].replace('\n', '');
+      var new_name = cmd.split('git mv ')[1].split(' ')[1].replace('\n', '');
+      info = 'This moved the file (named ' + old_name + ') to ' + new_name + '. It can be moved back.';
+      undo = 'git mv ' + new_name + ' ' + old_name;
+      autorun = true;
+    }
+    
     else if(cmd.indexOf('git checkout') > -1){
       info = 'git checkout moved you into a different branch of the repo. You can checkout any branch by name, or checkout the last one using -';
       undo = 'git checkout -';
@@ -192,6 +200,12 @@ var undoCommand = function(cmd, callback){
     else if(cmd.indexOf('git fetch') > -1){
       info = 'This updated the local copy of all branches in this repo. Un-updating master (and you can do other branches, too).';
       undo = 'git update-ref refs/remotes/origin/master refs/remotes/origin/master@{1}';
+      autorun = true;
+    }
+    
+    else if(cmd.indexOf('git pull') > -1 || cmd.indexOf('git merge') > -1){
+      info = 'This merged another branch (local or remote) into your current branch. This resets you to the last version.';
+      undo = 'git reset --hard HEAD^';
       autorun = true;
     }
     
