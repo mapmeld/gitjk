@@ -281,11 +281,21 @@ describe('reassure user on do-nothing commands', function(){
 
 describe('unknown command', function(){
   it('should print an error message', function(done){
-    exec('echo "ls\n" | ./index.js', function(err, response){
+    exec('echo "git blog\n" | ./index.js', function(err, response){
       if(err){
         throw err;
       }
       assert.include(response, "I didn't recognize that command");
+      done();
+    });
+  });
+  
+  it('should print an error message', function(done){
+    exec('echo "ls\n" | ./index.js', function(err, response){
+      if(err){
+        throw err;
+      }
+      assert.include(response, "I didn't find a git command");
       done();
     });
   });

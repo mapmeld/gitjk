@@ -6,12 +6,12 @@ var exec = require('child_process').exec;
 
 // command line options
 program
-  .version('0.0.7')
+  .version('0.0.8')
   .option('-f', '--fix', 'attempt to fix')
   .parse(process.argv);
 
 // get last command
-var foundGitCommand = false;
+var foundGit = false;
 process.stdin.resume();
 process.stdin.setEncoding('utf8');
 process.stdin.on('data', function(last_lines) {
@@ -51,7 +51,13 @@ process.stdin.on('data', function(last_lines) {
         console.log("No undo command known");
       }
     });
+    foundGit = true;
     break;
+  }
+});
+process.stdin.on('end', function() {
+  if(!foundGit){
+    console.log("I didn't find a git command");
   }
 });
 
