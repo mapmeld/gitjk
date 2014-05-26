@@ -36,6 +36,7 @@ describe('git clone', function(){
 });
 
 describe('git add', function(){
+  /* calls git status - difficult to test this without a repo
   it('should reset a previously-indexed file', function(done){
     exec('echo "git add package.json" | ./index.js', function(err, response){
       if(err){
@@ -46,7 +47,6 @@ describe('git add', function(){
     });
   });
 
-  /* calls git status - difficult to test this without a repo
   it('should rm --cached a previously un-indexed file', function(done){
     exec('echo "git add secret.txt" | ./index.js', function(err, response){
       if(err){

@@ -114,7 +114,7 @@ var undoCommand = function(cmd, callback){
         info = 'This added files to the changes staged for commit. All changes to files will be removed from staging for this commit, but remain saved in the local file system.';
         undo = '';
         if(existing_filenames.length){
-          undo = 'git reset ' + existing_filenames;
+          undo += 'git reset ' + existing_filenames;
           if(new_filenames.length){
             undo += "\n";
           }
