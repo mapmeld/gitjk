@@ -75,9 +75,13 @@ last command into the program.
     npm install -g gitjk
     alias gitjk="history 10 | tac | gitjk_cmd"
 
-If you are using `fish` instead of `bash`/`zsh`, place this is in `~/.config/fish.config` (from [lunixbochs](https://news.ycombinator.com/user?id=lunixbochs) on Hacker News):
+If you are using `fish`, place this is in `~/.config/fish.config` (from [lunixbochs](https://news.ycombinator.com/user?id=lunixbochs) on Hacker News):
     
     alias jk="history | head -n+10 | tail -r | gitjk_cmd"
+
+If you are using `iTerm`
+
+    alias gitjk="history | tail -r -n 10 | gitjk_cmd"
 
 ## License
 
