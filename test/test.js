@@ -177,6 +177,18 @@ describe('git commit', function(){
   });
 });
 
+describe('git revert', function(){
+  it('should unseal the git revert commit', function(done){
+    exec('echo "git revert 0ee030\n" | ./index.js', function(err, response){
+      if(err){
+        throw err;
+      }
+      assert.include(response, "git reset --soft 'HEAD^'");
+      done();
+    });
+  });
+});
+
 describe('git fetch', function(){
   it('should un-update master branch', function(done){
     exec('echo "git fetch\n" | ./index.js', function(err, response){
@@ -213,6 +225,93 @@ describe('git merge', function(){
   });
 });
 
+describe('git archive', function(){
+  it('should tell user to remove archive', function(done){
+    exec('echo "git archive HEAD > sample.zip\n" | ./index.js', function(err, response){
+      if(err){
+        throw err;
+      }
+      assert.include(response, "rm -rf");
+      done();
+    });
+  });
+});
+
+describe('git stash', function(){
+  it('should tell user when they stashed changes', function(done){
+    exec('echo "git stash\n" | ./index.js', function(err, response){
+      if(err){
+        throw err;
+      }
+      assert.include(response, "git stash apply");
+      done();
+    });
+  });
+
+  it('should tell user when they un-stashed changes', function(done){
+    exec('echo "git stash apply\n" | ./index.js', function(err, response){
+      if(err){
+        throw err;
+      }
+      assert.include(response, "git stash");
+      done();
+    });
+  });
+
+  it('should tell user when they un-stashed changes', function(done){
+    exec('echo "git stash pop\n" | ./index.js', function(err, response){
+      if(err){
+        throw err;
+      }
+      assert.include(response, "git stash");
+      done();
+    });
+  });
+
+  it('should tell user when they listed stashes', function(done){
+    exec('echo "git stash list\n" | ./index.js', function(err, response){
+      if(err){
+        throw err;
+      }
+      assert.include(response, "doesn't change the repo");
+      done();
+    });
+  });
+});
+
+describe('git branch', function(){
+  it('should tell user when they added a branch', function(done){
+    exec('echo "git branch banana\n" | ./index.js', function(err, response){
+      if(err){
+        throw err;
+      }
+      assert.include(response, "git branch -D banana");
+      done();
+    });
+  });
+
+  it('should tell user when they deleted a branch', function(done){
+    exec('echo "git branch -D banana\n" | ./index.js', function(err, response){
+      if(err){
+        throw err;
+      }
+      assert.include(response, "git branch");
+      assert.include(response, "git pull");
+      done();
+    });
+  });
+
+  it('should tell user when they listed branches', function(done){
+    exec('echo "git branch -a\n" | ./index.js', function(err, response){
+      if(err){
+        throw err;
+      }
+      assert.include(response, "doesn't change the repo");
+      done();
+    });
+  });
+});
+
 describe('git push', function(){
   it('should not fix a git push', function(done){
     exec('echo "git push origin master\n" | ./index.js', function(err, response){
@@ -220,6 +319,16 @@ describe('git push', function(){
         throw err;
       }
       assert.include(response, "This uploaded all of your committed changes to a remote repo.");
+      done();
+    });
+  });
+  
+  it('should help fix a push to heroku', function(done){
+    exec('echo "git push heroku master\n" | ./index.js', function(err, response){
+      if(err){
+        throw err;
+      }
+      assert.include(response, "heroku rollback");
       done();
     });
   });
@@ -235,7 +344,17 @@ describe('reassure user on do-nothing commands', function(){
       done();
     });
   });
-  
+
+  it('git cat-file', function(done){
+    exec('echo "git cat-file 0ee030\n" | ./index.js', function(err, response){
+      if(err){
+        throw err;
+      }
+      assert.include(response, "doesn't change the repo");
+      done();
+    });
+  });
+
   it('git diff', function(done){
     exec('echo "git diff\n" | ./index.js', function(err, response){
       if(err){
@@ -265,7 +384,17 @@ describe('reassure user on do-nothing commands', function(){
       done();
     });
   });
-  
+
+  it('git ls-tree', function(done){
+    exec('echo "git ls-tree 0ee030\n" | ./index.js', function(err, response){
+      if(err){
+        throw err;
+      }
+      assert.include(response, "doesn't change the repo");
+      done();
+    });
+  });
+
   it('git grep', function(done){
     exec('echo "git grep\n" | ./index.js', function(err, response){
       if(err){
@@ -278,7 +407,7 @@ describe('reassure user on do-nothing commands', function(){
 });
 
 describe('unknown command', function(){
-  it('should print an error message', function(done){
+  it('should print an error message with unknown command', function(done){
     exec('echo "git blog\n" | ./index.js', function(err, response){
       if(err){
         throw err;
@@ -288,7 +417,7 @@ describe('unknown command', function(){
     });
   });
   
-  it('should print an error message', function(done){
+  it('should print an error message without git', function(done){
     exec('echo "ls\n" | ./index.js', function(err, response){
       if(err){
         throw err;

@@ -6,7 +6,7 @@ var exec = require('child_process').exec;
 
 // command line options
 program
-  .version('0.0.10')
+  .version('0.0.11')
   .option('-f', '--fix', 'attempt to fix')
   .parse(process.argv);
 
@@ -189,7 +189,12 @@ var undoCommand = function(cmd, callback){
       info = 'This saved your staged changes as a commit, which can be updated with git commit --amend or completely uncommited:';
       undo = "git reset --soft 'HEAD^'";
     }
-    
+
+    else if(cmd.indexOf('git revert') > -1){
+      info = 'This made a new commit to retract a commit. You can undo *the revert commit* using a more extreme approach:';
+      undo = "git reset --soft 'HEAD^'";
+    }
+
     else if(cmd.indexOf('git fetch') > -1){
       info = 'This updated the local copy of all branches in this repo. Un-updating master (and you can do other branches, too).';
       undo = 'git update-ref refs/remotes/origin/master refs/remotes/origin/master@{1}';
@@ -203,18 +208,73 @@ var undoCommand = function(cmd, callback){
     }
     
     else if(cmd.indexOf('git push') > -1){
-      info = 'This uploaded all of your committed changes to a remote repo. It may be impractical to reverse it.';
+      autorun = false;
+      info = 'This uploaded all of your committed changes to a remote repo. It may be difficult to reverse it.';
+      info += '\nYou can use git revert <commit_id> to tell repos to turn back these commits.';
+      info += '\nThere is git checkout <commit_id> and git push --force, but this will mess up others\' git history!';
+      if(cmd.indexOf('git push heroku') > -1){
+        info += '\nIf you are hosting this app on Heroku, run "heroku rollback" to reset your app now.'; 
+      }
+    }
+    
+    else if(cmd.indexOf('git branch') > -1){
+      autorun = true;
+      if(cmd.indexOf(' -D') > -1){
+        // delete branch
+        info = 'You deleted a branch. You can use "git branch" to create it again, or "git pull" to restore it from a remote repo.';
+        autorun = false;
+      }
+      else if(cmd.indexOf('git branch ') > -1){
+        // create branch
+        var branch_name = cmd.split('git branch ')[1].split(' ')[0];
+        if(branch_name.length && branch_name[0] != '-'){
+          info = 'You created a new branch named ' + branch_name + '. You can delete it:';
+          undo = 'git branch -D ' + branch_name;
+        }
+      }
+      if(!info){
+        // must have listed branches
+        info = "git branch on its own doesn't change the repo; it just lists all branches. Use it often!";
+      }
+    }
+
+    else if(cmd.indexOf('git stash') > -1){
+      if(cmd.indexOf('stash list') > -1){
+        info = "git stash list doesn't change the repo; it just tells you the stashed changes which you can restore using git stash apply.";
+        autorun = true;
+      }
+      else if(cmd.indexOf('stash pop') > -1 || cmd.indexOf('stash apply') > -1){
+        info = 'You restored changes from the stash. You can stash specific changes again using git stash.';
+        autorun = false;
+      }
+      else{
+        info = 'You stashed any changes which were not yet commited. Restore the latest stash using:';
+        undo = 'git stash apply';
+        autorun = true;
+      }
+    }
+
+    else if(cmd.indexOf('git archive') > -1){
+      info = 'This created an archive of part of the repo - you can delete it using "rm -rf <archive_file_or_folder>".';
       autorun = false;
     }
     
     // harmless
     
+    else if(cmd.indexOf('git cat-file') > -1){
+      info = "git cat-file doesn't change the repo; it just tells you the type of an object in the repo.";
+      autorun = true;
+    }
     else if(cmd.indexOf('git diff') > -1){
       info = "git diff doesn't change the repo; it just tells you the changes waiting for commit OR the changes between branches. Use it often!";
       autorun = true;
     }
     else if(cmd.indexOf('git grep') > -1){
       info = "git grep doesn't change the repo; it's a search tool. Use grep and git grep often!";
+      autorun = true;
+    }
+    else if(cmd.indexOf('git ls-tree') > -1){
+      info = "git ls-tree doesn't change the repo; it just tells you about an object in the git repo.";
       autorun = true;
     }
     else if(cmd.indexOf('git show') > -1){

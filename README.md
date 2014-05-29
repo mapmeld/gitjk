@@ -27,6 +27,9 @@ Asking to fix it automatically
 Included:
 
     add,
+    archive,
+    branch,
+    cat-file,
     checkout,
     clone,
     commit,
@@ -35,19 +38,24 @@ Included:
     grep,
     init,
     log,
+    ls-tree,
     merge,
     mv,
     pull,
     push,
     remote,
+    revert,
     rm,
     show,
+    stash,
     status
 
 Not included:
 
     bisect,
-    branch,
+    fsck,
+    gc,
+    prune,
     rebase,
     reset,
     tag
