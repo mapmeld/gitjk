@@ -11,7 +11,7 @@ Asking for undo-ing advice.
     gitjk
 
     This created a .git folder in the current directory. You can remove it.
-    sudo rm -r .git
+    rm -rf .git
 
 Asking to fix it automatically
 
@@ -20,7 +20,7 @@ Asking to fix it automatically
 
     This added file.js to the changes staged for commit. All changes to file.js will be removed from
     staging for this commit, but remain saved in your file.
-    Running... git rm -r --cached file.js
+    Running... git reset file.js
     Completed
 
 ## Coverage
@@ -62,8 +62,8 @@ Not included:
 
 ## Install
 
-You can't just npm install! The module is named gitjk but you can set up an alias for it to pipe the
-last command into the program.
+You need to run npm install and alias to fully install.
+The module is named gitjk but you need to set up an alias to pipe the most recent commands into the program.
 
 ### OSX or BSD
 
@@ -74,6 +74,8 @@ last command into the program.
 
     npm install -g gitjk
     alias gitjk="history 10 | tac | gitjk_cmd"
+
+### Different Terminals
 
 If you are using `fish`, place this is in `~/.config/fish.config` (from [lunixbochs](https://news.ycombinator.com/user?id=lunixbochs) on Hacker News):
     
