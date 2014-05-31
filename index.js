@@ -3,6 +3,7 @@
 // requirements
 var program = require('commander');
 var exec = require('child_process').exec;
+var gitConfig = require('git-config');
 
 // command line options
 program
@@ -80,10 +81,35 @@ var undoCommand = function(cmd, callback){
         repo_name,
         repo_url,
         old_name,
-        new_name;
+        new_name,
+        aliases;
 
     cmd = cmd.replace(/\r?\n|\r/g, ' ').replace(/\s\s+/g, ' ').replace(/\s$/, '');
     
+    // Using sync here; we won't be running this thousands of times
+    // per second, so it's probably fine. Sync with no arguments
+    // looks for a .gitconfig in the $HOME directory.
+    aliases = gitConfig.sync().alias || {};
+
+    // Try replacing aliases with the expanded command.
+    Object.keys(aliases).forEach(function (alias) {
+      var command,
+          replacement;
+
+      command = 'git ' + alias;
+      command = new RegExp(command + '\\s|' + command + '$');
+      replacement = 'git ' + aliases[alias];
+
+      // If the alias is present in the command and the alias maps
+      // to multiple commands (e.g. git ca -> git add -A && git commit),
+      // we don't do anything.
+      if (command.test(cmd) && replacement.indexOf('&&') > -1) {
+        info = 'Sorry, I don\'t know how to undo compound aliases.';
+      } else {
+        cmd = cmd.replace(command, replacement);
+      }
+    });
+
     if(cmd.indexOf('git init') > -1){
       info = 'This created a .git folder in the current directory. You can remove it.';
       undo = 'rm -rf .git';
