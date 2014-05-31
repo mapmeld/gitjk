@@ -24,7 +24,8 @@ Asking to fix it automatically
     Completed
 
 ## Coverage
-Included:
+
+### Included:
 
     add,
     archive,
@@ -50,7 +51,9 @@ Included:
     stash,
     status
 
-Not included:
+Basic [aliases](http://git-scm.com/book/en/Git-Basics-Tips-and-Tricks#Git-Aliases) are also supported (e.g. `git cm` for `git commit`).
+
+### Not included:
 
     bisect,
     fsck,
@@ -59,6 +62,8 @@ Not included:
     rebase,
     reset,
     tag
+
+Compound aliases are not supported (e.g. `git ac` for `git add -A && git commit`).
 
 ## Install
 
