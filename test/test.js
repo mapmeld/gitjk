@@ -427,3 +427,76 @@ describe('unknown command', function(){
     });
   });
 });
+
+describe('aliases', function() {
+  var renamedConfig = false,
+      fs = require('fs'),
+      path = require('path'),
+      oldPath = path.join(process.env.HOME, '.gitconfig'),
+      tempPath = path.join(process.env.HOME, '.GITJKTEMP');
+
+  var newConfig = 
+    '[alias]\n' +
+    '  st = status\n' +
+    '  cm = commit\n' +
+    '  ac = !git add -A && git commit\n';
+
+  // Create a gitconfig with some aliases before tests run.
+  before(function (done) {
+    fs.rename(oldPath, tempPath, function (err) {
+
+      // No existing gitconfig.
+      if (err) renamedConfig = false;
+
+      fs.writeFile(oldPath, newConfig, function (err) {
+
+        // If something went wrong, try restoring the gitconfig.
+        if (err) afterTests(function () {});
+      });
+
+      done();
+    });
+  });
+
+  function afterTests (done) {
+    fs.unlink(oldPath, function (err) {
+      
+      if (!renamedConfig) return done();
+
+      fs.rename(tempPath, oldPath, function (err) {
+        if (err) throw err;
+
+        done();
+      });
+    });
+  }
+
+  after(afterTests);
+
+  it('should properly handle simple aliases (1)', function (done) {
+    exec('echo "git st\n" | ./index.js', function(err, response){
+      if(err) throw err;
+
+      assert.include(response, "doesn't change the repo");
+      done();
+    });
+  });
+
+  it('should properly handle simple aliases (2)', function (done) {
+    exec('echo "git cm\n" | ./index.js', function(err, response){
+      if(err) throw err;
+
+      assert.include(response, "git reset --soft 'HEAD^'");
+      done();
+    });
+  });
+
+  it('should inform the user it cannot handle compound aliases.', function (done) {
+    exec('echo "git ac\n" | ./index.js', function(err, response){
+      if(err) throw err;
+
+      assert.include(response, 'No undo command known');
+      done();
+    });
+  });
+});
