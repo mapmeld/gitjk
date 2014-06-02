@@ -7,7 +7,7 @@ var gitConfig = require('git-config');
 
 // command line options
 program
-  .version('0.0.11')
+  .version('0.0.12')
   .option('-f', '--fix', 'attempt to fix')
   .parse(process.argv);
 
