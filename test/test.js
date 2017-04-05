@@ -111,6 +111,16 @@ describe('git checkout', function(){
       done();
     });
   });
+  
+  it('should warn you can\t undo', function(done){
+    exec('echo "git checkout package.json\n" | ./index.js', function(err, response){
+      if(err){
+        throw err;
+      }
+      assert.include(response, 'panic');
+      done();
+    });
+  });
 });
 
 describe('git remote', function(){

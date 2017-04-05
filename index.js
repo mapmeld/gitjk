@@ -1,9 +1,10 @@
 #! /usr/bin/env node
 
 // requirements
-var program = require('commander');
-var exec = require('child_process').exec;
-var gitConfig = require('git-config');
+const fs = require('fs');
+const program = require('commander');
+const exec = require('child_process').exec;
+const gitConfig = require('git-config');
 
 // command line options
 program
@@ -177,9 +178,16 @@ var undoCommand = function(cmd, callback){
     }
     
     else if(cmd.indexOf('git checkout') > -1){
-      info = 'git checkout moved you into a different branch of the repo. You can checkout any branch by name, or checkout the last one using -';
-      undo = 'git checkout -';
-      autorun = true;
+      if (cmd.split(/\s+/).length < 3) {
+        info = 'git checkout command was invalid';
+      } else if ((cmd.split(/\s+/)[2] !== '-b') && (cmd.split(/\s+/).length !== 3 || fs.existsSync(cmd.split(/\s+/)[2]))) {
+        info = 'Don\'t panic, but this overwrote any changes that you made to these files since your last commit. It isn\'t reversible using git.';
+      } else {
+        // handling branch change
+        info = 'git checkout moved you into a different branch of the repo. You can checkout any branch by name, or checkout the last one using -';
+        undo = 'git checkout -';
+        autorun = true;
+      }
     }
     
     else if(cmd.indexOf('git remote add') > -1){

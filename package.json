@@ -1,6 +1,6 @@
 {
   "name": "gitjk",
-  "version": "0.0.12",
+  "version": "0.1.12",
   "description": "undo or explain how to undo last git command",
   "keywords": [
     "git",
