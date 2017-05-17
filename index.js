@@ -86,7 +86,7 @@ var undoCommand = function(cmd, callback){
         aliases;
 
     cmd = cmd.replace(/\r?\n|\r/g, ' ').replace(/\s\s+/g, ' ').replace(/\s$/, '');
-    
+
     // Using sync here; we won't be running this thousands of times
     // per second, so it's probably fine. Sync with no arguments
     // looks for a .gitconfig in the $HOME directory.
@@ -116,7 +116,7 @@ var undoCommand = function(cmd, callback){
       undo = 'rm -rf .git';
       autorun = true;
     }
-    
+
     else if(cmd.indexOf('git clone') > -1){
       var outputfolder = null;
       var cloned_into = cmd.split('git clone ')[1].split(' ');
@@ -131,7 +131,7 @@ var undoCommand = function(cmd, callback){
         outputfolder = outputfolder[outputfolder.length-1];
         outputfolder = outputfolder.split('.git')[0];
       }
-      
+
       info = 'This downloaded a repo and all of its git history to a folder. You can remove it.';
       if(outputfolder && outputfolder.length && outputfolder.indexOf("..") == -1){
         undo = 'rm -rf ./' + outputfolder.replace(' ', '\\ ');
@@ -142,7 +142,7 @@ var undoCommand = function(cmd, callback){
         autorun = false;
       }
     }
-    
+
     else if(cmd.indexOf('git add') > -1){
       filenames = getFileNames(cmd.split('git add ')[1]);
       info = 'This added files to the changes staged for commit. All changes to files will be removed from staging for this commit, but remain saved in the local file system.';
@@ -155,7 +155,7 @@ var undoCommand = function(cmd, callback){
         autorun = true;
       }
     }
-    
+
     else if(cmd.indexOf('git rm') > -1){
       filenames = cmd.split('git rm ')[1];
       if(cmd.indexOf("--cached") > -1){
@@ -168,7 +168,7 @@ var undoCommand = function(cmd, callback){
       }
       autorun = true;
     }
-    
+
     else if(cmd.indexOf('git mv') > -1){
       old_name = cmd.split('git mv ')[1].split(' ')[0];
       new_name = cmd.split('git mv ')[1].split(' ')[1];
@@ -176,7 +176,7 @@ var undoCommand = function(cmd, callback){
       undo = 'git mv ' + new_name + ' ' + old_name;
       autorun = true;
     }
-    
+
     else if(cmd.indexOf('git checkout') > -1){
       if (cmd.split(/\s+/).length < 3) {
         info = 'git checkout command was invalid';
@@ -189,7 +189,7 @@ var undoCommand = function(cmd, callback){
         autorun = true;
       }
     }
-    
+
     else if(cmd.indexOf('git remote add') > -1){
       repo_name = cmd.split('git remote add ')[1].split(' ')[0];
       repo_url = cmd.split('git remote add ')[1].split(' ')[1];
@@ -199,7 +199,7 @@ var undoCommand = function(cmd, callback){
       undo = 'git remote rm ' + repo_name;
       autorun = true;
     }
-    
+
     else if(cmd.indexOf('git remote remove') > -1 || cmd.indexOf('git remote rm') > -1){
       repo_name = cmd.split('git remote ')[1].split(' ')[1];
 
@@ -207,7 +207,7 @@ var undoCommand = function(cmd, callback){
       info += "\nIt needs to be added back using git remote add " + repo_name + " <git-url>";
       autorun = false;
     }
-    
+
     else if(cmd.indexOf('git remote set-url') > -1){
       repo_name = cmd.split('git remote set-url ')[1].split(' ')[0];
       repo_url = cmd.split('git remote set-url ')[1].split(' ')[1];
@@ -216,7 +216,7 @@ var undoCommand = function(cmd, callback){
       info += "\nIt can be removed (using git remote rm) or set again (using git remote set-url).";
       autorun = false;
     }
-    
+
     else if(cmd.indexOf('git remote rename') > -1){
       old_name = cmd.split('git remote rename ')[1].split(' ')[0];
       new_name = cmd.split('git remote rename ')[1].split(' ')[1];
@@ -224,7 +224,7 @@ var undoCommand = function(cmd, callback){
       undo = 'git remote rename ' + new_name + ' ' + old_name;
       autorun = true;
     }
-    
+
     else if(cmd.indexOf('git commit') > -1){
       info = 'This saved your staged changes as a commit, which can be updated with git commit --amend or completely uncommited:';
       undo = "git reset --soft 'HEAD^'";
@@ -240,23 +240,23 @@ var undoCommand = function(cmd, callback){
       undo = 'git update-ref refs/remotes/origin/master refs/remotes/origin/master@{1}';
       autorun = true;
     }
-    
+
     else if(cmd.indexOf('git pull') > -1 || cmd.indexOf('git merge') > -1){
-      info = 'This merged another branch (local or remote) into your current branch. This resets you to the last version.';
-      undo = 'git reset --hard HEAD^';
-      autorun = true;
+      info = 'This merged another branch (local or remote) into your current branch. You want to reset to a specific previous state.';
+      undo = '"git reset --hard [commit-hash]" will set you to previous commit, "git reset --hard origin/" will return you to the state of the remote named "origin."';
+      autorun = false;
     }
-    
+
     else if(cmd.indexOf('git push') > -1){
       autorun = false;
       info = 'This uploaded all of your committed changes to a remote repo. It may be difficult to reverse it.';
       info += '\nYou can use git revert <commit_id> to tell repos to turn back these commits.';
       info += '\nThere is git checkout <commit_id> and git push --force, but this will mess up others\' git history!';
       if(cmd.indexOf('git push heroku') > -1){
-        info += '\nIf you are hosting this app on Heroku, run "heroku rollback" to reset your app now.'; 
+        info += '\nIf you are hosting this app on Heroku, run "heroku rollback" to reset your app now.';
       }
     }
-    
+
     else if(cmd.indexOf('git branch') > -1){
       autorun = true;
       if(cmd.indexOf(' -D') > -1){
@@ -298,9 +298,9 @@ var undoCommand = function(cmd, callback){
       info = 'This created an archive of part of the repo - you can delete it using "rm -rf <archive_file_or_folder>".';
       autorun = false;
     }
-    
+
     // harmless
-    
+
     else if(cmd.indexOf('git cat-file') > -1){
       info = "git cat-file doesn't change the repo; it just tells you the type of an object in the repo.";
       autorun = true;
@@ -333,7 +333,7 @@ var undoCommand = function(cmd, callback){
       info = "git remote (without additional arguments) doesn't change the repo; it just tells you what remotes there are. Use it often!";
       autorun = true;
     }
-    
+
     callback(null, info, undo, autorun);
   }
   catch(e){

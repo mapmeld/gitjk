@@ -45,7 +45,7 @@ describe('git add', function(){
       done();
     });
   });
-  
+
   it('should warn instead of doing git reset . or git reset *', function(done){
     exec('echo "git add .\n" | ./index.js', function(err, response){
       if(err){
@@ -67,7 +67,7 @@ describe('git rm', function(){
       done();
     });
   });
-  
+
   it('should un-delete a deleted file', function(done){
     exec('echo "git rm package.json\n" | ./index.js', function(err, response){
       if(err){
@@ -101,7 +101,7 @@ describe('git checkout', function(){
       done();
     });
   });
-  
+
   it('should checkout back to the previous directory', function(done){
     exec('echo "git checkout -b created\n" | ./index.js', function(err, response){
       if(err){
@@ -111,7 +111,7 @@ describe('git checkout', function(){
       done();
     });
   });
-  
+
   it('should warn you can\t undo', function(done){
     exec('echo "git checkout package.json\n" | ./index.js', function(err, response){
       if(err){
@@ -133,7 +133,7 @@ describe('git remote', function(){
       done();
     });
   });
-  
+
   it('should warn a remote remove', function(done){
     exec('echo "git remote remove github\n" | ./index.js', function(err, response){
       if(err){
@@ -143,7 +143,7 @@ describe('git remote', function(){
       done();
     });
   });
-  
+
   it('should warn a remote rm', function(done){
     exec('echo "git remote rm github\n" | ./index.js', function(err, response){
       if(err){
@@ -153,7 +153,7 @@ describe('git remote', function(){
       done();
     });
   });
-  
+
   it('should swap names in a remote rename', function(done){
     exec('echo "git remote rename github banana\n" | ./index.js', function(err, response){
       if(err){
@@ -163,7 +163,7 @@ describe('git remote', function(){
       done();
     });
   });
-  
+
   it('does nothing without args', function(done){
     exec('echo "git remote\n" | ./index.js', function(err, response){
       if(err){
@@ -217,7 +217,7 @@ describe('git pull', function(){
       if(err){
         throw err;
       }
-      assert.include(response, "git reset --hard HEAD^");
+      assert.include(response, "git reset --hard");
       done();
     });
   });
@@ -229,7 +229,7 @@ describe('git merge', function(){
       if(err){
         throw err;
       }
-      assert.include(response, "git reset --hard HEAD^");
+      assert.include(response, "git reset --hard");
       done();
     });
   });
@@ -332,7 +332,7 @@ describe('git push', function(){
       done();
     });
   });
-  
+
   it('should help fix a push to heroku', function(done){
     exec('echo "git push heroku master\n" | ./index.js', function(err, response){
       if(err){
@@ -374,7 +374,7 @@ describe('reassure user on do-nothing commands', function(){
       done();
     });
   });
-  
+
   it('git show', function(done){
     exec('echo "git show\n" | ./index.js', function(err, response){
       if(err){
@@ -384,7 +384,7 @@ describe('reassure user on do-nothing commands', function(){
       done();
     });
   });
-  
+
   it('git log', function(done){
     exec('echo "git log\n" | ./index.js', function(err, response){
       if(err){
@@ -426,7 +426,7 @@ describe('unknown command', function(){
       done();
     });
   });
-  
+
   it('should print an error message without git', function(done){
     exec('echo "ls\n" | ./index.js', function(err, response){
       if(err){
@@ -445,7 +445,7 @@ describe('aliases', function() {
       oldPath = path.join(process.env.HOME, '.gitconfig'),
       tempPath = path.join(process.env.HOME, '.GITJKTEMP');
 
-  var newConfig = 
+  var newConfig =
     '[alias]\n' +
     '  st = status\n' +
     '  cm = commit\n' +
@@ -470,7 +470,7 @@ describe('aliases', function() {
 
   function afterTests (done) {
     fs.unlink(oldPath, function (err) {
-      
+
       if (!renamedConfig) return done();
 
       fs.rename(tempPath, oldPath, function (err) {
