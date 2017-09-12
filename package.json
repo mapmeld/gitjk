@@ -13,13 +13,13 @@
     "url": "https://github.com/mapmeld/gitjk.git"
   },
   "dependencies": {
-    "commander": "2.2.x",
-    "git-config": "0.0.6"
+    "commander": "~2.11.0",
+    "git-config": "0.0.7"
   },
   "devDependencies": {
     "should": ">= 0.0.1",
-    "mocha": "1.18.x",
-    "chai": "1.9.x"
+    "mocha": "~3.5.3",
+    "chai": "~4.1.2"
   },
   "preferGlobal": "true",
   "bin": {
