@@ -1,5 +1,7 @@
 # gitjk
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/mapmeld/gitjk.svg)](https://greenkeeper.io/)
+
 If you just ran a git command that you didn't mean to, this program will either undo it,
 tell you how to undo it, or tell you it's impossible to undo. Based on a joke I posted a while ago.
 
