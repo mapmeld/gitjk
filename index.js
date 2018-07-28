@@ -119,10 +119,19 @@ var undoCommand = function(cmd, callback){
 
     else if(cmd.indexOf('git clone') > -1){
       var outputfolder = null;
-      var cloned_into = cmd.split('git clone ')[1].split(' ');
-      if(cloned_into.length > 1){
-        // specified output folder
-        outputfolder = cloned_into[1];
+      if (cmd.indexOf('git clone ') > -1) {
+        var cloned_into = (cmd.split('git clone ')[1] || '').split(' ');
+        if(cloned_into.length > 1){
+          // specified output folder
+          outputfolder = cloned_into[1];
+        }
+        else{
+          // default output folder
+          // extract from remote - for example https://github.com/mapmeld/gitjk.git
+          outputfolder = cloned_into[0].split("/");
+          outputfolder = outputfolder[outputfolder.length-1];
+          outputfolder = outputfolder.split('.git')[0];
+        }
       }
       else{
         // default output folder
@@ -144,7 +153,7 @@ var undoCommand = function(cmd, callback){
     }
 
     else if(cmd.indexOf('git add') > -1){
-      filenames = getFileNames(cmd.split('git add ')[1]);
+      filenames = getFileNames(cmd.split('git add ')[1] || '');
       info = 'This added files to the changes staged for commit. All changes to files will be removed from staging for this commit, but remain saved in the local file system.';
       if(filenames.indexOf('.') > -1 || filenames.indexOf('*') > -1){
         info += "\nUsing . or * affects all files, so you will need to run 'git reset <file>' on each file you didn't want to add.";
@@ -157,7 +166,7 @@ var undoCommand = function(cmd, callback){
     }
 
     else if(cmd.indexOf('git rm') > -1){
-      filenames = cmd.split('git rm ')[1];
+      filenames = cmd.split('git rm ')[1] || '';
       if(cmd.indexOf("--cached") > -1){
         info = 'This took files out of the changes staged for commit. All changes will be re-added to staging for this commit.';
         undo = 'git add ' + filenames.replace('--cached', '');
@@ -170,8 +179,8 @@ var undoCommand = function(cmd, callback){
     }
 
     else if(cmd.indexOf('git mv') > -1){
-      old_name = cmd.split('git mv ')[1].split(' ')[0];
-      new_name = cmd.split('git mv ')[1].split(' ')[1];
+      old_name = (cmd.split('git mv ')[1] || '').split(' ')[0];
+      new_name = (cmd.split('git mv ')[1] || '').split(' ')[1];
       info = 'This moved the file (named ' + old_name + ') to ' + new_name + '. It can be moved back.';
       undo = 'git mv ' + new_name + ' ' + old_name;
       autorun = true;
@@ -191,8 +200,8 @@ var undoCommand = function(cmd, callback){
     }
 
     else if(cmd.indexOf('git remote add') > -1){
-      repo_name = cmd.split('git remote add ')[1].split(' ')[0];
-      repo_url = cmd.split('git remote add ')[1].split(' ')[1];
+      repo_name = (cmd.split('git remote add ')[1] || '').split(' ')[0];
+      repo_url = (cmd.split('git remote add ')[1] || '').split(' ')[1];
 
       info = 'This added a remote repo (named ' + repo_name + ') pointing to ' + repo_url;
       info += "\nIt can be removed.";
@@ -201,7 +210,7 @@ var undoCommand = function(cmd, callback){
     }
 
     else if(cmd.indexOf('git remote remove') > -1 || cmd.indexOf('git remote rm') > -1){
-      repo_name = cmd.split('git remote ')[1].split(' ')[1];
+      repo_name = (cmd.split('git remote ')[1] || '').split(' ')[1];
 
       info = 'This removed a remote repo (named ' + repo_name + ')';
       info += "\nIt needs to be added back using git remote add " + repo_name + " <git-url>";
@@ -209,8 +218,8 @@ var undoCommand = function(cmd, callback){
     }
 
     else if(cmd.indexOf('git remote set-url') > -1){
-      repo_name = cmd.split('git remote set-url ')[1].split(' ')[0];
-      repo_url = cmd.split('git remote set-url ')[1].split(' ')[1];
+      repo_name = (cmd.split('git remote set-url ')[1] || '').split(' ')[0];
+      repo_url = (cmd.split('git remote set-url ')[1] || '').split(' ')[1] || '';
 
       info = 'This changed the remote repo (named ' + repo_name + ') to point to ' + repo_url;
       info += "\nIt can be removed (using git remote rm) or set again (using git remote set-url).";
@@ -218,8 +227,8 @@ var undoCommand = function(cmd, callback){
     }
 
     else if(cmd.indexOf('git remote rename') > -1){
-      old_name = cmd.split('git remote rename ')[1].split(' ')[0];
-      new_name = cmd.split('git remote rename ')[1].split(' ')[1];
+      old_name = (cmd.split('git remote rename ')[1] || '').split(' ')[0];
+      new_name = (cmd.split('git remote rename ')[1] || '').split(' ')[1] || '';
       info = 'This changed the remote repo (named ' + old_name + ') to have the name ' + new_name + '. It can be reset.';
       undo = 'git remote rename ' + new_name + ' ' + old_name;
       autorun = true;
@@ -266,7 +275,7 @@ var undoCommand = function(cmd, callback){
       }
       else if(cmd.indexOf('git branch ') > -1){
         // create branch
-        var branch_name = cmd.split('git branch ')[1].split(' ')[0];
+        var branch_name = (cmd.split('git branch ')[1] || '').split(' ')[0];
         if(branch_name.length && branch_name[0] != '-'){
           info = 'You created a new branch named ' + branch_name + '. You can delete it:';
           undo = 'git branch -D ' + branch_name;

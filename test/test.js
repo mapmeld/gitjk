@@ -77,6 +77,16 @@ describe('git rm', function(){
       done();
     });
   });
+
+  it('should avoid saying -undefined-', function(done){
+    exec('echo "git rm" | ./index.js', function(err, response){
+      if(err){
+        throw err;
+      }
+      assert.notInclude(response, 'undefined');
+      done();
+    });
+  });
 });
 
 describe('git mv', function(){
