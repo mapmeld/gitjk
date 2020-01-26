@@ -18,7 +18,7 @@
   },
   "devDependencies": {
     "should": ">= 0.0.1",
-    "mocha": "~6.2.0",
+    "mocha": "~7.0.1",
     "chai": "~4.1.2"
   },
   "preferGlobal": "true",
