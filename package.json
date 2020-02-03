@@ -13,7 +13,7 @@
     "url": "https://github.com/mapmeld/gitjk.git"
   },
   "dependencies": {
-    "commander": "~4.0.0",
+    "commander": "~4.1.1",
     "git-config": "0.0.7"
   },
   "devDependencies": {
